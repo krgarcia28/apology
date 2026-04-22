@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I'm Sorry 💌</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Floating hearts background -->
+  <div class="hearts-bg" id="heartsBg"></div>
+
+  <!-- Progress dots -->
+  <div class="progress">
+    <div class="dot active" id="d0"></div>
+    <div class="dot" id="d1"></div>
+    <div class="dot" id="d2"></div>
+    <div class="dot" id="d3"></div>
+  </div>
+
+  <!-- PAGE 0: Envelope -->
+  <div class="page active" id="page0">
+    <div class="envelope-wrap" onclick="goTo(1)" title="Click to open">
+      <div class="envelope">
+        <div class="envelope-flap"></div>
+        <div class="envelope-left"></div>
+        <div class="envelope-right"></div>
+        <div class="envelope-seal">💌</div>
+      </div>
+    </div>
+    <h1 class="tagline">I have something<br>to tell you…</h1>
+    <p class="sub">Something important. Something from the heart.</p>
+    <p class="click-hint">↑ click the envelope</p>
+  </div>
+
+  <!-- PAGE 1: Letter -->
+  <div class="page" id="page1">
+    <div class="letter-card">
+      <p class="letter-date" id="letterDate"></p>
+      <div class="letter-body">
+        <p>Hey Loveeee,</p>
+        <p>I've been thinking about what happened, and I know that "sorry" barely covers it. But I mean it — deeply, completely, with my whole heart.</p>
+        <p>I was wrong. I said things I shouldn't have, and you didn't deserve any of it. You deserve patience, kindness, and someone who shows up for you — and I let you down.</p>
+        <p>I'm just hoping you'll give me the chance to do better — because you mean everything to me. </p>
+        <p></p>
+      </div>
+      <p class="letter-sig">— Yours, always. 🍀</p>
+    </div>
+    <button class="btn-next" onclick="goTo(2)" style="margin-top:2rem;">Continue reading… 💌</button>
+  </div>
+
+  <!-- PAGE 2: The Question -->
+  <div class="page" id="page2">
+    <div class="question-wrap">
+      <div class="big-emoji">🥺</div>
+      <h2 class="question-text">So… will you forgive me?</h2>
+      <p class="question-sub">Ayaaaaw mo??? Hende mo na ako mahal??</p>
+      <div class="btn-row">
+        <button class="btn btn-yes" onclick="goTo(3)">Yes, I forgive you 💕</button>
+        <button class="btn btn-no" id="noBtn">No 😤</button>
+      </div>
+      <p id="noCounter" style="margin-top:1rem;font-size:0.8rem;color:#b08890;font-style:italic;min-height:1.2em;"></p>
+    </div>
+  </div>
+
+  <!-- PAGE 3: Forgiven! -->
+  <div class="page" id="page3">
+    <div class="confetti-wrap" id="confettiWrap"></div>
+    <div class="forgiven-content">
+      <div><img src="gifs/pink-heart.gif" alt="description" style="width: 200px; height: 200px;"></div>
+      <h1 class="forgiven-title">Thank you Loveeee! mwamwamwamwamwa</h1>
+      <p class="forgiven-sub">You have no idea how much that means to me.</p>
+      <div class="promise-box">
+        <h3>My promises to you:</h3>
+        <ul class="promise-list">
+          <li>I'll listen more and be more understanding</li>
+          <li>I'll choose your feelings over being right</li>
+          <li>I'll try not to make you overthink more</li>
+          <li>I'll make it up to you </li>
+        </ul>
+      </div>
+      <button class="btn-next" onclick="restart()">Start over </button>
+    </div>
+  </div>
+
+  <audio id="bgMusic" src="daisies.mp3" autoplay loop hidden>
+    <!-- Background music: Place your music.mp3 file in the project folder -->
+  </audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
