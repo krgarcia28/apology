@@ -110,3 +110,153 @@ function launchConfetti() {
     wrap.appendChild(piece);
   }
 }
+
+// ── Dani Polaroid Photocard Logic ──
+const photocardImages = [
+  { src: 'dani-images/dani1.png', caption: 'My Lovee #1' },
+  { src: 'dani-images/dani2.png', caption: 'My Lovee #2' },
+  { src: 'dani-images/dani3.png', caption: 'My Lovee #3' },
+  { src: 'dani-images/dani4.png', caption: 'My Lovee #4' },
+  { src: 'dani-images/dani5.png', caption: 'My Lovee #5' },
+  { src: 'dani-images/dani6.png', caption: 'My Lovee #6' },
+  { src: 'dani-images/dani7.png', caption: 'My Lovee #7' },
+  { src: 'dani-images/dani8.png', caption: 'My Lovee #8' },
+];
+
+function randomPolaroidPositions(count, containerW, containerH) {
+  // Scatter polaroids only on the left and right sides, avoid center and main content
+  const margin = 1; // Minimum margin from edges
+  const width = 110, height = 130;
+  const minDist = 40; // Minimum distance between polaroid centers
+  const centerGap = 0.28; // Fraction of width to leave as center gap (e.g. 0.28 = 28%)
+  const positions = [];
+
+  // Define main content no-go zones (hardcoded for this layout)
+  // Each zone: {left, top, right, bottom} relative to container
+  // Example: center vertical band, and letter-card/question-wrap/promise-box
+  const noGoZones = [
+    // Center vertical band
+    {
+      left: containerW * (0.5 - centerGap / 2) - 20,
+      top: 0,
+      right: containerW * (0.5 + centerGap / 2) + 20,
+      bottom: containerH
+    },
+    // Letter card (page 1)
+    {
+      left: containerW * 0.5 - 300,
+      top: 120,
+      right: containerW * 0.5 + 300,
+      bottom: 420
+    },
+    // Question wrap (page 2)
+    {
+      left: containerW * 0.5 - 240,
+      top: 120,
+      right: containerW * 0.5 + 240,
+      bottom: 420
+    },
+    // Promise box (page 3)
+    {
+      left: containerW * 0.5 - 220,
+      top: 320,
+      right: containerW * 0.5 + 220,
+      bottom: 600
+    }
+  ];
+
+  function overlapsNoGoZone(left, top, width, height) {
+    const right = left + width;
+    const bottom = top + height;
+    for (const zone of noGoZones) {
+      if (
+        left < zone.right &&
+        right > zone.left &&
+        top < zone.bottom &&
+        bottom > zone.top
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  for (let i = 0; i < count; i++) {
+    let tries = 0;
+    let left, top, angle, overlaps;
+    do {
+      // Decide left or right side
+      const side = Math.random() < 0.5 ? 'left' : 'right';
+      if (side === 'left') {
+        left = margin + Math.random() * ((containerW * (0.5 - centerGap / 2)) - width - margin);
+      } else {
+        left = containerW * (0.5 + centerGap / 2) + Math.random() * ((containerW * (0.5 - centerGap / 2)) - width - margin);
+      }
+      top = margin + Math.random() * (containerH - height - margin * 2);
+      angle = (Math.random() - 0.5) * 18; // -9deg to +9deg
+      overlaps = false;
+      // Check overlap with other polaroids
+      for (let j = 0; j < positions.length; j++) {
+        const dx = (left + width / 2) - (positions[j].left + width / 2);
+        const dy = (top + height / 2) - (positions[j].top + height / 2);
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < Math.max(width, height) - minDist) {
+          overlaps = true;
+          break;
+        }
+      }
+      // Check overlap with no-go zones
+      if (!overlaps && overlapsNoGoZone(left, top, width, height)) {
+        overlaps = true;
+      }
+      tries++;
+    } while (overlaps && tries < 50);
+    positions.push({ left, top, angle });
+    attempts += tries;
+  }
+  return positions;
+}
+
+function renderPolaroids(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  // Clear previous
+  container.innerHTML = '';
+  // Get container size
+  const parent = container.parentElement;
+  const containerW = parent.offsetWidth;
+  const containerH = parent.offsetHeight;
+  const positions = randomPolaroidPositions(photocardImages.length, containerW, containerH);
+  photocardImages.forEach((img, i) => {
+    const polaroid = document.createElement('div');
+    polaroid.className = 'polaroid';
+    polaroid.style.left = positions[i].left + 'px';
+    polaroid.style.top = positions[i].top + 'px';
+    polaroid.style.setProperty('--angle', positions[i].angle + 'deg');
+    // Image
+    const image = document.createElement('img');
+    image.className = 'polaroid-img';
+    image.src = img.src;
+    image.alt = img.caption;
+    polaroid.appendChild(image);
+    // Caption
+    const caption = document.createElement('div');
+    caption.className = 'polaroid-caption';
+    caption.textContent = img.caption;
+    polaroid.appendChild(caption);
+    container.appendChild(polaroid);
+  });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  renderPolaroids('polaroidContainer');
+  renderPolaroids('polaroidContainer2');
+});
+
+// Re-render polaroids in random positions every time the page is shown
+const origGoTo = goTo;
+goTo = function(n) {
+  origGoTo(n);
+  if (n === 2) renderPolaroids('polaroidContainer');
+  if (n === 3) renderPolaroids('polaroidContainer2');
+};
